@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>pra cima</title>
+
+<style>
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial, sans-serif;
+}
+
+/* SEÇÕES */
+.section{
+    position:absolute;
+    width:100%;
+    height:100%;
+    transition:transform 1.2s ease-in-out;
+}
+
+#intro{
+    background:url("forest.gif") center/cover no-repeat;
+}
+
+#stars{
+    background:black url("stars.gif") center/cover no-repeat;
+    transform:translateY(100%);
+}
+
+/* FRASES */
+.intro-text{
+    position:absolute;
+    top:40%;
+    width:100%;
+    text-align:center;
+    font-size:2em;
+    color:white;
+    opacity:0;
+    transition:opacity 1s;
+}
+
+/* SETA */
+.arrow{
+    position:absolute;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:40px;
+    color:white;
+    cursor:pointer;
+    animation:bounce 1s infinite;
+    opacity:0;
+}
+
+@keyframes bounce{
+    0%,100%{transform:translate(-50%,0)}
+    50%{transform:translate(-50%,10px)}
+}
+
+/* BOTÃO TELESCÓPIO */
+#telescopeBtn{
+    position:absolute;
+    bottom:35%;
+    left:50%;
+    transform:translateX(-50%);
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    border:3px solid white;
+    background:#111;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+}
+
+/* MODO TELESCÓPIO */
+#telescopeView{
+    position:absolute;
+    inset:0;
+    background:black;
+    display:none;
+}
+
+.circle{
+    width:80vw;
+    height:80vw;
+    max-width:420px;
+    max-height:420px;
+    border-radius:50%;
+    border:40px solid black;
+    overflow:hidden;
+    margin:auto;
+}
+
+.circle img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* TEXTO */
+.textBox{
+    position:absolute;
+    left:10px;
+    top:10px;
+    bottom:10px;
+    width:40%;
+    color:white;
+    overflow-y:auto;
+    padding:10px;
+    font-size:15px;
+}
+
+/* NAVEGAÇÃO */
+.nav{
+    position:absolute;
+    bottom:15px;
+    right:15px;
+}
+
+button{
+    background:#111;
+    color:white;
+    border:1px solid white;
+    padding:10px 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro" class="section">
+    <div class="intro-text">Entre o barulho do caos...</div>
+    <div class="intro-text">O silêncio falava mais alto. E então sob um telescopio, você olhou pro céu...</div>
+    <div class="intro-text">Até que as estrelas clamaram pelo seu som.</div>
+    <div class="arrow" onclick="goStars()">⬇</div>
+</div>
+
+<div id="stars" class="section">
+    <div id="telescopeBtn">Ver</div>
+</div>
+
+<div id="telescopeView">
+    <audio id="music" src="music.mp3" loop></audio>
+
+    <div class="textBox" id="text"></div>
+
+    <div class="circle">
+        <img id="slide" src="1.jpg">
+    </div>
+
+    <div class="nav">
+        <button onclick="prev()">◀</button>
+        <button onclick="next()">▶</button>
+    </div>
+</div>
+
+<script>
+const texts = [ /* TODO O SEU TEXTO PERMANECE IGUAL */
+"o dia em que foi perceptivel que você existia, o universo deixou de ser apenas um lugar e passou a ser uma estrada. em meio a tantas imprevisibilidades e em meio à tantas nuances, você surgiu como essas estrelas que só aparecem quando a gente fica atento olhando pra cima e esquece da realidade dentro do nosso próprio mundinho. ",
+"existe um dito por parte de fernando pessoa que alguns indivíduos podem significar tudo quando esse mundinho cede. quando ruimos dentro dele, quando as rachaduras aparecem e de repente a última esperança... aparece no céu. será que você combina com o nome esperança? do tipo botar até com sobrenome? porque de forma direta eu te vejo como um resquicio quase que gritante de que existe alguém que significa mais do que galáxias. até porque... você não é alguém que se encontra andando em círculos. você não é alguém delimitada pelo próprio tempo, você na verdade é alguém que surpreende ao ponto de ser tudo ou nada para as pessoas.",
+"e eu não sou seres de outras dimensões pra definir o seu futuro ou o seu passado, mas vendo através da sua história e de tudo que você construiu e viu, que passou até agora... verdade seja dita, os seres dessas outras dimensões devem lhe assistir com uma tamanha admiração. devem perceber sobretudo que mora em você uma sutileza de um lindo florescer que nem mesmo as maiores estrelas têm.",
+"se fosse preciso atravessar sistemas solares inteiros, desmontar o próprio tempo, negociar com a gravidade só pra um dia poder voltar no passado e revivenciar tudo o que vi sobre você, só pra poder te salvar de um destino ruim que já passou por você porque sim, já passou vários desses destinos....se eu tivesse que negociar com entidades fora do meu alcance, eu negociaria. afinal, o existir do seu sorriso é uma das coisas mais maravilhosas dos confins do cosmos.",
+" porque há existências que não são só encontros e sim, são destinos. e talvez eu ter te encontrado seja um desses destinos pelo qual já foi escrito em areia de uma forma até cômica na vez que te aconteceu. existir, no seu caso, não é pouco. é grande demais pra caber em uma dessas linhas que o destino também esteve resguardando pra você. é tão raro, tão específico que as vezes penso que o simples fato de você estar aqui já é uma espécie de milagre estatístico que desafia as leis do existir. há coisas no universo que só acontecem uma vez, uma colisão improvável, uma dobra no espaço ou uma coincidência tão absurda que muda o rumo de tudo ao redor. você é uma dessas coisas. ",
+"mas antes de ser essa luz que hoje atravessa tudo, houve um caminho e houve silêncio. houve noites longas demais, dias pesados demais e talvez passos dados sem saber exatamente para onde ir. o passado em você não é sombra nenhuma,  é uma fundação belissima de quem você é hoje. cada cicatriz virou constelação, cada erro virou mapa pelo qual nem a NASA poderia mapear aos céus e mesmo quando o mundo parecia estreito demais, você continuou andando e como quem confia que o horizonte sempre existiu pra você e ainda continua existindo, mesmo quando não dá pra ver. se o espaço tivesse consciência, ele se curvaria em silêncio diante de você. se o tempo pudesse falar, ele diminuiria o passo só para te observar existir mais devagar. ",
+"porque o seu existir vale a pena. vale a pena o risco vale a pena até a distância se eu estivesse em outra galáxia, vale a pena atravessar o desconhecido sem mapa e sem garantias, sem promessas de retorno. há pessoas que a gente gosta, há pessoas que a gente ama e há pessoas que fazem o universo parecer pequeno demais para aquilo que a gente sente. você é essa terceira coisa, sabia? imagino às vezes que em algum ponto do cosmos há seres observando a nossa realidade como quem estuda uma singularidade... algo tão intenso que distorce tudo ao redor. e no centro desse fenômeno, está você. pode ser até um exagero, é claro que sou rodeado desses exageros mas não porque você tente ser o centro, mas porque a sua presença altera as leis do que é comum e quem é próximo de você pode entender. ",
+"as emoções se comportam diferente, o silêncio pesa diferente, o mundo fica estranho no melhor sentido possível. e quando penso no futuro ele não me parece distante. ele brilha ao pensar em você. há uma esperança silenciosa no jeito como você caminha, como se o próprio amanhã estivesse aprendendo com você a ser melhor e olha só pra você, é quase ano novo e até agora eu só vejo você se tornando cada vez melhor e quem dirá no meio do próximo ano?",
+" eu vejo em você alguém que ainda vai florescer mais do que já floresceu, não porque precise mas porque é da sua natureza crescer. você carrega uma luz que ainda não terminou de nascer e na lei do tempo, o tempo é relativo e ele vai reafirmar tudo que eu digo. há universos inteiros que eu atravessaria só para te encontrar do outro lado. há versões de mim que eu abandonaria sem hesitar se isso significasse chegar mais perto de você. porque você não é só alguém que se deseja, você é alguém que realmente é de verdade em seu modo de agir mesmo quando a escolha parece impossível. ",
+"no fim de tudo, quando as estrelas se apagarem, quando o tempo cansar de seguir em frente, quando até o espaço aprender a descansar eu ainda acreditarei que entre todas as coisas que poderiam ter existido, você foi uma das mais bonitas decisões do universo. e se existir algum lugar além deste, alguma dimensão onde as histórias continuam depois do último suspiro eu espero te encontrar lá também, sorrindo, porque essa é a minha parte favorita de você."
+];
+
+let index = 0;
+
+let typingTimer = null;
+let isTyping = false;
+
+/* ANIMAÇÃO INTRO */
+const introTexts = document.querySelectorAll(".intro-text");
+const arrow = document.querySelector(".arrow");
+let step = 0;
+
+function showText(){
+    if(step>0) introTexts[step-1].style.opacity=0;
+    if(step<introTexts.length){
+        introTexts[step].style.opacity=1;
+        setTimeout(()=>introTexts[step].style.opacity=0,2000);
+        step++;
+        setTimeout(showText,2500);
+    }else{
+        arrow.style.opacity=1;
+    }
+}
+showText();
+
+/* TRANSIÇÃO */
+function goStars(){
+    document.getElementById("intro").style.transform="translateY(-100%)";
+    document.getElementById("stars").style.transform="translateY(0)";
+}
+
+/* TELESCÓPIO */
+document.getElementById("telescopeBtn").onclick=()=>{
+    document.getElementById("telescopeView").style.display="block";
+    document.getElementById("music").play();
+    update();
+};
+
+/* CORREÇÃO DEFINITIVA DO BUG */
+function typeText(t){
+    const el = document.getElementById("text");
+
+    if(typingTimer) clearInterval(typingTimer);
+
+    el.innerHTML = "";
+    let i = 0;
+    isTyping = true;
+
+    typingTimer = setInterval(()=>{
+        if(i < t.length){
+            el.innerHTML += t[i];
+            i++;
+            el.scrollTop = el.scrollHeight;
+        } else {
+            clearInterval(typingTimer);
+            typingTimer = null;
+            isTyping = false;
+        }
+    },40);
+}
+
+function update(){
+    if(isTyping){
+        clearInterval(typingTimer);
+        typingTimer = null;
+        document.getElementById("text").innerHTML = texts[index];
+        isTyping = false;
+        return;
+    }
+    document.getElementById("slide").src = `${index+1}.jpg`;
+    typeText(texts[index]);
+}
+
+function next(){
+    if(isTyping){ update(); return; }
+    index = (index+1)%texts.length;
+    update();
+}
+
+function prev(){
+    if(isTyping){ update(); return; }
+    index = (index-1+texts.length)%texts.length;
+    update();
+}
+</script>
+
+</body>
+</html>
